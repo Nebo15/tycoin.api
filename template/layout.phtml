@@ -1,0 +1,19 @@
+<?php
+  $this->host_url = lmb_env_get('HOST_URL');
+  $this->facebook_app_namespace = $this->toolkit->getConf('facebook')->namespace;
+  $this->facebook_app_id = $this->toolkit->getConf('facebook')->appId;
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>{$#title}</title>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# {$#facebook_app_namespace}: http://ogp.me/ns/fb/{$#facebook_app_namespace}#">
+  <meta property="fb:app_id" content="{$#facebook_app_id}" />
+  {{slot id='meta'/}}
+</head>
+<body>
+  {{slot id='content'/}}
+  {{slot id='content_zone'/}}
+</body>
+</html>
