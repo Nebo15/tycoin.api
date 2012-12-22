@@ -1,11 +1,13 @@
 <?php
 $conf = array(
-  'appId'       => '317068191730340',
-  'secret'      => '9340f6fa28eca15847822f3a27fb9d07',
-  'namespace'   => 'tycoins',
+  'appId'       => '414778518590747',
+  'secret'      => 'b4b52088ae9c8352c891491762785848',
+  'namespace'   => 'tycoinns',
   'permissions' => [
     'publish_actions',
     'publish_stream',
+    'user_location',
+    'email',
   ],
   'cookie'      => false,
   'fileUpload'  => false,
