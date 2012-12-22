@@ -20,6 +20,18 @@ class AuthController extends BaseJsonController
     return $this->_answerOk($answer);
   }
 
+  function doGuestMobileFacebookLogin()
+  {
+    $facebook = $this->toolkit->getFacebook();
+    if(!$facebook->getUser()) {
+      $this->response->redirect($facebook->getLoginUrl());
+      return 'Redirecting...';
+    } else {
+      $this->response->redirect('tycoin://index.html#profile:token=' . $facebook->getAccessToken());
+      return $this->_answerOk();
+    }
+  }
+
   function doGuestLogin()
   {
     if (!$this->request->isPost())
