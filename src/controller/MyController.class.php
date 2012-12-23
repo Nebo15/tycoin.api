@@ -1,6 +1,5 @@
 <?php
 lmb_require('src/controller/BaseJsonController.class.php');
-lmb_require('src/model/News.class.php');
 
 class MyController extends BaseJsonController
 {

@@ -3,7 +3,6 @@ lmb_require('src/model/base/BaseModel.class.php');
 lmb_require('src/model/traits/Imageable.class.php');
 lmb_require('limb/imagekit/src/lmbConvertImageHelper.class.php');
 lmb_require('limb/validation/src/rule/lmbValidValueRule.class.php');
-lmb_require('src/model/News.class.php');
 lmb_require('src/model/NewsRecipient.class.php');
 
 /**
