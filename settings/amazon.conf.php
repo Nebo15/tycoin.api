@@ -7,6 +7,6 @@ $conf = array(
     'certificate_authority' => true),
   'S3' => array(
     'bucket' => 'onedayofmine',
-    'enabled' => true
+    'enabled' => false
   )
 );
