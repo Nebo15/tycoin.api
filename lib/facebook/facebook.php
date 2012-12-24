@@ -82,9 +82,9 @@ class Facebook extends BaseFacebook
   }
 
   protected function constructSessionVariableName($key) {
-    return implode('_', array(session_id(),
-                              'fb',
-                              $this->getAppId(),
+    return implode('_', array('fb_storage_',
+                              lmbToolkit::instance()->getUser() ? lmbToolkit::instance()->getUser()->id : rand(1,
+                              1000),
                               $key));
   }
 }
