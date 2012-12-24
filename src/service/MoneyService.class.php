@@ -6,10 +6,7 @@ class MoneyService
 {
   function history(User $user)
   {
-    $answer = [];
-    foreach(Transaction::findByUser($user) as $transaction)
-      $answer[] = $transaction->exportForApi();
-    return $answer;
+    return Transaction::findByUser($user);
   }
 
   function transfer(User $sender, User $recipient, $coins_type, $coins_count)
