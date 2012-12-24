@@ -6,6 +6,7 @@ class PartnersController extends BaseJsonController
   function doGuestDeals()
   {
     $offer = new stdClass();
+    $offer1 = new stdClass();
     $offer1->id = 1;
     $offer1->description = 'Бесплатный кофе за каждое хорошее дело!';
     $offer1->image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/800px-A_small_cup_of_coffee.JPG';
