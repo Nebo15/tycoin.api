@@ -30,7 +30,7 @@ class TransactionController extends BaseJsonController
     return $this->toolkit->getMoneyService()->balance($this->_getUser());
   }
 
-  function doGuestHistory()
+  function doHistory()
   {
     $answer = [];
     foreach((new MoneyService())->history($this->_getUser()) as $transaction)
