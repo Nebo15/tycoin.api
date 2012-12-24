@@ -116,19 +116,6 @@ class odTools extends lmbAbstractTools
   }
 
   /**
-   * @return odNewsService
-   */
-  function getNewsObserver()
-  {
-    static $news_observer;
-
-    if(!$news_observer)
-      $news_observer = new odNewsService($this->getUser());
-
-    return $news_observer;
-  }
-
-  /**
    * @return odExportHelper
    */
   function getExportHelper()
