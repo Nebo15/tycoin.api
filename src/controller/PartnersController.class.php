@@ -7,10 +7,10 @@ class PartnersController extends BaseJsonController
   {
     $offer = new stdClass();
     $offer->id = 1;
-    $offer->description = 'По киллограму свинного фарша, всем добрым людям!';
-    $offer->image = 'http://deficit.in.ua/assets/images/farsh1.jpg';
-    $offer->coins = '5';
-    $offer->coins_type = '';
+    $offer->description = 'Бесплатный кофе за каждое хорошее дело!';
+    $offer->image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/800px-A_small_cup_of_coffee.JPG';
+    $offer->coins = '1';
+    $offer->coins_type = 1;
     $offer->shop_id = 1;
     return $this->_answerOk($offer);
   }
@@ -19,8 +19,8 @@ class PartnersController extends BaseJsonController
   {
     $shop = new stdClass();
     $shop->id = 1;
-    $shop->title = 'Дом мясорубок на Кутузовском';
-    $shop->location = "На Кутузовском. Узнать легко, по царь-котлете на крыше.";
+    $shop->title = 'Кофейня "Венеция"';
+    $shop->location = "ул. Ленина, 4а";
     return $this->_answerOk($shop);
   }
 
