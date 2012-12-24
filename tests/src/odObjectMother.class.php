@@ -7,7 +7,7 @@ class odObjectMother
   /**
    * @return User
    */
-  function user($name = null)
+  function user($name = null, $purchased_coins_count = 1)
   {
     $user = new User();
     $user->facebook_uid = $this->string(5);
@@ -66,6 +66,16 @@ class odObjectMother
     $notification->sound = $this->string();
     $notification->is_sended = 0;
     return $notification->save();
+  }
+
+  function shopDealWithUsualCoin()
+  {
+    return ShopDeal::find()[0];
+  }
+
+  function shopDealWithBigCoin()
+  {
+    return ShopDeal::find()[1];
   }
 
   function string($length = 6)

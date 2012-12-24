@@ -7,7 +7,7 @@ abstract class odUnitTestCase extends UnitTestCase
   use odEntityAssertions;
 
   /**
-   * @var OdObjectMother
+   * @var odObjectMother
    */
   protected $generator;
   /**

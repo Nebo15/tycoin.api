@@ -4,15 +4,21 @@ lmb_require('src/model/User.class.php');
 
 class Transaction extends BaseModel
 {
+  const TRANSFER = 1;
+  const PAYMENT = 2;
+  const PURCHASE = 3;
+  const RESTORATION = 4;
+
   protected $_default_sort_params = array('id' => 'desc');
   protected $_db_table_name = 'transaction';
 
+  public $type;
   public $sender_id;
   public $recipient_id;
   public $coins_count;
   public $coins_type;
   public $ctime;
-  public $text;
+  public $message;
 
   protected function _createValidator()
   {
@@ -20,6 +26,8 @@ class Transaction extends BaseModel
     $validator->addRequiredRule('sender_id');
     $validator->addRequiredRule('recipient_id');
     $validator->addRequiredRule('type');
+    $validator->addRequiredRule('coins_type');
+    $validator->addRequiredRule('coins_count');
     return $validator;
   }
 
