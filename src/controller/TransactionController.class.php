@@ -11,7 +11,7 @@ class TransactionController extends BaseJsonController
 
     $this->toolkit->getFacebookProfile($this->_getUser())->shareTransaction((new odObjectMother())->transaction());
 
-    return (new MyController())->doBalance();
+    return $this->toolkit->getMoneyService()->balance($this->_getUser());
   }
 
   function doPay()
@@ -19,7 +19,7 @@ class TransactionController extends BaseJsonController
     if(!$this->request->isPost())
       return $this->_answerNotPost();
 
-    return (new MyController())->doBalance();
+    return $this->toolkit->getMoneyService()->balance($this->_getUser());
   }
 
   function doClaim()
@@ -27,7 +27,7 @@ class TransactionController extends BaseJsonController
     if(!$this->request->isPost())
       return $this->_answerNotPost();
 
-    return (new MyController())->doBalance();
+    return $this->toolkit->getMoneyService()->balance($this->_getUser());
   }
 
   function doGuestHistory()

@@ -150,6 +150,14 @@ class odTools extends lmbAbstractTools
   }
 
   /**
+   * @return MoneyService
+   */
+  function getMoneyService()
+  {
+    return new MoneyService();
+  }
+
+  /**
    * @return string
    */
   function getSessidFromRequest()
