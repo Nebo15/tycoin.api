@@ -15,7 +15,7 @@ class TransactionController extends BaseJsonController
 
     $this->toolkit->getFacebookProfile($this->_getUser())->shareTransaction($transaction);
 
-    return $this->toolkit->getMoneyService()->balance($this->_getUser());
+    return $this->_answerOk($this->toolkit->getMoneyService()->balance($this->_getUser()));
   }
 
   function doPay()
