@@ -1,0 +1,14 @@
+{{wrap with="layout.phtml"}}
+{{into slot="meta"}}
+<meta property="og:type" content="{$#facebook_app_namespace}:Coin" />
+<meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction" />
+{{/into}}
+{{into slot="content"}}
+<h1>Transaction #{$#transaction.id}</h1>
+<ul>
+    <li>id: {$#transaction.id}</li>
+    <li>user_id: {$#transaction.user_id}</li>
+    <li>description: {$#transaction.message}</li>
+</ul>
+{{/into}}
+{{/wrap}}

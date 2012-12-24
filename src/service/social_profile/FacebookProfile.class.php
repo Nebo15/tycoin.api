@@ -143,9 +143,9 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
   {
     return $this->provider->api("/me/feed", "post", array(
       'name'        => $transaction->title,
-      'picture'     => count($transaction->getMoments()) ? lmbToolkit::instance()->getStaticUrl($day->getImage()) : '',
+      'picture'     => 'http://www.olympiacandy.com/uploadmedia/images/gold-coin-thank-you-1072-L.jpg',
       'link'        => $this->_getPageUrl($transaction),
-      'description' => 'Visit onedayofmine.com for more info',
+      'description' => $transaction->message,
     ));
   }
 
