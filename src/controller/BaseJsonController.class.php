@@ -230,6 +230,7 @@ abstract class BaseJsonController extends lmbController
     {
       $this->response->addHeader('Access-Control-Allow-Origin: *');
       $this->response->addHeader('Access-Control-Allow-Credentials: true');
+      $this->response->addHeader('Access-Control-Allow-Headers: Cache-Control, pragma');
     }
 
     $this->response->setCode($code);
