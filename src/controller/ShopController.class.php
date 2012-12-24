@@ -8,4 +8,10 @@ class ShopController extends BaseJsonController
   {
     return $this->_answerOk(InternalShopDeal::find());
   }
+
+  function doGuestPurchase()
+  {
+    lmb_require('src/controller/MyController.class.php');
+    return (new MyController())->doBalance();
+  }
 }
