@@ -4,18 +4,28 @@ lmb_require('src/model/Transaction.class.php');
 
 class TransactionController extends BaseJsonController
 {
-  function doTransaction()
+  function doTransfer()
   {
     if(!$this->request->isPost())
       return $this->_answerNotPost();
 
-    
+    return (new MyController())->doBalance();
   }
 
-  function odPayment()
+  function doPay()
   {
     if(!$this->request->isPost())
       return $this->_answerNotPost();
+
+    return (new MyController())->doBalance();
+  }
+
+  function doClaim()
+  {
+    if(!$this->request->isPost())
+      return $this->_answerNotPost();
+
+    return (new MyController())->doBalance();
   }
 
   function doGuestHistory()
