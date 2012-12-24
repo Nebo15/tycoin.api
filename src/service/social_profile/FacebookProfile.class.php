@@ -142,7 +142,7 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
   public function shareTransaction(Transaction $transaction)
   {
     return $this->provider->api("/me/feed", "post", array(
-      'name'        => $transaction->title,
+      'name'        => "Thank you, %username%",
       'picture'     => 'http://www.olympiacandy.com/uploadmedia/images/gold-coin-thank-you-1072-L.jpg',
       'link'        => $this->_getPageUrl($transaction),
       'description' => $transaction->message,

@@ -191,10 +191,8 @@ class odTools extends lmbAbstractTools
     if(!$object->id)
       throw new lmbException("Can't get object ID.");
 
-    if('Day' == get_class($object))
-      return '/pages/'.$object->id.'/day';
-    if('Moment' == get_class($object))
-      return '/pages/'.$object->id.'/moment';
+    if('Transaction' == get_class($object))
+      return '/pages/'.$object->id.'/transaction';
     throw new lmbException('Unknown object class');
   }
 
