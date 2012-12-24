@@ -49,6 +49,30 @@ class odObjectMother
     return $news;
   }
 
+  function transaction($type = null, $coins_type = null, $coins_count = null, $sender = null, $recipient = null)
+  {
+    if(!$sender)
+      $sender = $this->user();
+    if(!$recipient)
+      $recipient = $this->user();
+    if(!$type)
+      $type = Transaction::TRANSFER;
+    if(!$coins_type)
+      $coins_type = COIN_USUAL;
+    if(!$coins_count)
+      $coins_count = 3;
+
+    $item = new Transaction();
+    $item->type = $type;
+    $item->coins_type = $coins_type;
+    $item->coins_count = $coins_count;
+    $item->sender_id = $sender->id;
+    $item->recipient_id = $recipient->id;
+    //$item->save();
+
+    return $item;
+  }
+
   function deviceToken(User $user = null)
   {
     $device_token = new DeviceToken();

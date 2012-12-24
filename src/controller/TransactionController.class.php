@@ -18,8 +18,11 @@ class TransactionController extends BaseJsonController
       return $this->_answerNotPost();
   }
 
-  function doHistory()
+  function doGuestHistory()
   {
-
+    return $this->_answerOk([
+      (new odObjectMother())->transaction(),
+      (new odObjectMother())->transaction()
+    ]);
   }
 }
