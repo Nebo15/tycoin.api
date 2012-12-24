@@ -6,6 +6,8 @@ $conf = array(
   'permissions' => [
     'publish_actions',
     'publish_stream',
+    'email',
+    'user_location',
   ],
   'cookie'      => false,
   'fileUpload'  => false,
