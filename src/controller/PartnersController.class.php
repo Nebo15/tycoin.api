@@ -5,7 +5,7 @@ class PartnersController extends BaseJsonController
 {
   function doGuestDeals()
   {
-    $offer = new stdClass();
+    $offers = [];
     $offer1 = new stdClass();
     $offer1->id = 1;
     $offer1->description = 'Бесплатный кофе за каждое хорошее дело!';
@@ -15,7 +15,7 @@ class PartnersController extends BaseJsonController
     $offer1->shop = new stdClass();
     $offer1->shop->title = 'Кофейня "Венеция"';
     $offer1->shop->location = "ул. Ленина, 4а";
-    $offer[] = $offer1;
+    $offers[] = $offer1;
     return $this->_answerOk($offer);
   }
 
