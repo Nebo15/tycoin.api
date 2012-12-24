@@ -6,4 +6,3 @@ git pull origin develop
 rm -rf ./var/*
 mkdir ./var/logs
 ./lib/limb/limb migrate_run
-./lib/limb/limb od_calc_interest
