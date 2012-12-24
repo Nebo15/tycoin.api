@@ -16,7 +16,7 @@ class PartnersController extends BaseJsonController
     $offer1->shop->title = 'Кофейня "Венеция"';
     $offer1->shop->location = "ул. Ленина, 4а";
     $offers[] = $offer1;
-    return $this->_answerOk($offer);
+    return $this->_answerOk($offers);
   }
 
   function doGuestItem()
