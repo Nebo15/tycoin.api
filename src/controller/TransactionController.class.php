@@ -9,8 +9,12 @@ class TransactionController extends BaseJsonController
     if(!$this->request->isPost())
       return $this->_answerNotPost();
 
-    $transaction = (new odObjectMother())->transaction();
+    $transaction = new Transaction();
     $transaction->sender_id = $this->_getUser()->id;
+    $transaction->type = Transaction::TRANSFER;
+    $transaction->coins_type = $this->request->get('type') == 'big' ? COIN_BIG : COIN_USUAL;
+    $transaction->coins_count = 1;
+    $transaction->message = $this->request->get('message');
     $transaction->save();
 
     $this->toolkit->getFacebookProfile($this->_getUser())->shareTransaction($transaction);

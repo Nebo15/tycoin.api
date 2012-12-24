@@ -23,8 +23,6 @@ class Transaction extends BaseModel
   protected function _createValidator()
   {
     $validator = new lmbValidator();
-    $validator->addRequiredRule('sender_id');
-    $validator->addRequiredRule('recipient_id');
     $validator->addRequiredRule('type');
     $validator->addRequiredRule('coins_type');
     $validator->addRequiredRule('coins_count');
