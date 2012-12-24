@@ -24,7 +24,8 @@ class AuthController extends BaseJsonController
   {
     $facebook = $this->toolkit->getFacebook();
     if(!$facebook->getUser()) {
-      $this->response->redirect($facebook->getLoginUrl());
+      $params['scope'] = $this->toolkit->getConf('facebook')['permissions'];
+      $this->response->redirect($facebook->getLoginUrl($params));
       return 'Redirecting...';
     } else {
       $this->response->redirect('tycoin://index.html#profile:token=' . $facebook->getAccessToken());
