@@ -8,8 +8,9 @@ class PartnersController extends BaseJsonController
     $offers = [];
     $offer1 = new stdClass();
     $offer1->id = 1;
+    $offer1->good = "Cappuccino";
     $offer1->description = 'Free coffee for all nice people!';
-    $offer1->image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/800px-A_small_cup_of_coffee.JPG';
+    $offer1->image = 'http://files.softicons.com/download/food-drinks-icons/cappuccino-icons-by-soundforge/png/256x256/Cappuccino_Illy.png';
     $offer1->coins = 1;
     $offer1->coin_type = 1;
     $offer1->shop = new stdClass();
@@ -23,8 +24,9 @@ class PartnersController extends BaseJsonController
   {
     $offer = new stdClass();
     $offer->id = 1;
+    $offer->good = "Cappuccino";
     $offer->description = 'Free coffee for all nice people!';
-    $offer->image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/800px-A_small_cup_of_coffee.JPG';
+    $offer->image = 'http://files.softicons.com/download/food-drinks-icons/cappuccino-icons-by-soundforge/png/256x256/Cappuccino_Illy.png';
     $offer->coins = 1;
     $offer->coin_type = 1;
     $offer->shop = new stdClass();
