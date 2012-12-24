@@ -1,5 +1,6 @@
 <?php
 lmb_require('src/model/Transaction.class.php');
+lmb_require('src/model/Balance.class.php');
 
 class MoneyService
 {
