@@ -20,4 +20,20 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(1, count($service->history($sender)));
     $this->assertEqual(1, count($service->history($recipient)));
   }
+
+  function testBalance()
+  {
+    $service = new MoneyService();
+
+    $sender = $this->generator->user('sender', 1);
+    $recipient = $this->generator->user('recipient');
+
+    $this->assertEqual(1, $service->balance($sender));
+    $this->assertEqual(0, $service->balance($recipient));
+
+    $service->transfer($sender, $recipient, COIN_USUAL, 1);
+
+    $this->assertEqual(0, $service->balance($sender));
+    $this->assertEqual(1, $service->balance($recipient));
+  }
 }

@@ -26,6 +26,6 @@ class PartnersController extends BaseJsonController
 
   function doGuestBuy()
   {
-    return (new MyController())->doBalance();
+    (new MyController())->doBalance();
   }
 }

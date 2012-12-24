@@ -5,16 +5,6 @@ class MyController extends BaseJsonController
 {
   function doBalance()
   {
-    $balance = new stdClass();
-    $balance->purchased_coins = new stdClass();
-    $balance->purchased_coins->usual_count = 3;
-    $balance->purchased_coins->big_count = 2;
-    $balance->received_coins = new stdClass();
-    $balance->received_coins->usual_count = 4;
-    $balance->received_coins->big_count = 1;
-    $balance->free_coin = new stdClass();
-    $balance->free_coin->available = false;
-    $balance->free_coin->available_time = time()+60*60*8;
-    return $this->_answerOk($balance);
+    return $this->_answerOk((new MoneyService())->balance($this->_getUser()));
   }
 }

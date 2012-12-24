@@ -48,9 +48,17 @@ class Transaction extends BaseModel
     return User::findByIds($this->recipient_id);
   }
 
+  static function findByUser(User $user)
+  {
+    $criteria = lmbSQLCriteria::equal('sender_id', $user->id);
+    $criteria->addOr(lmbSQLCriteria::equal('recipient_id', $user->id));
+    return Transaction::find($criteria, ['id' => 'DESC']);
+  }
+
   function exportForApi(array $properties = null)
   {
-    $exported = parent::exportForApi(['id', 'sender_id', 'recipient_id', 'type', 'text']);
+    $exported = parent::exportForApi(['id', 'sender_id', 'recipient_id', 'type', 'coins_type', 'coins_count',
+      'message']);
     $exported->time = $this->ctime;
     return $exported;
   }
