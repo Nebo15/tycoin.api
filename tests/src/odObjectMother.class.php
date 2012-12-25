@@ -1,5 +1,4 @@
 <?php
-
 class odObjectMother
 {
   protected $generate_random = true;
@@ -7,7 +6,7 @@ class odObjectMother
   /**
    * @return User
    */
-  function user($name = null, $purchased_coins_count = 1)
+  function user($name = null)
   {
     $user = new User();
     $user->facebook_uid = $this->string(5);

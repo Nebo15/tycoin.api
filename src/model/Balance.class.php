@@ -2,11 +2,11 @@
 
 class Balance
 {
-  public $purchased_coins_count;
-  public $purchased_big_coins_count;
-  public $received_coins_count;
-  public $received_big_coins_count;
-  public $free_coins_available;
+  public $purchased_coins_count = 0;
+  public $purchased_big_coins_count = 0;
+  public $received_coins_count = 0;
+  public $received_big_coins_count = 0;
+  public $free_coins_available = false;
   public $free_coins_available_time;
 
   function exportForApi()

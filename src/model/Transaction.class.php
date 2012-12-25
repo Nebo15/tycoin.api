@@ -7,7 +7,7 @@ class Transaction extends BaseModel
   const TRANSFER = 1;
   const PAYMENT = 2;
   const PURCHASE = 3;
-  const RESTORATION = 4;
+  const RESTORE = 4;
 
   protected $_default_sort_params = array('id' => 'desc');
   protected $_db_table_name = 'transaction';
