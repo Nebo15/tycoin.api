@@ -1,5 +1,6 @@
 <?php
 
+/** @noinspection PhpUndefinedClassInspection */
 class odSearchService extends SphinxClient
 {
   protected static $config;

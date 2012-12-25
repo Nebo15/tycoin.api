@@ -20,7 +20,7 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(0, $balance->purchased_big_coins_count);
     $this->assertEqual(0, $balance->received_coins_count);
     $this->assertEqual(0, $balance->received_big_coins_count);
-    $this->assertEqual(false, $balance->free_coins_available);
+    $this->assertEqual(0, $balance->free_coins_count);
     $this->assertEqual(null, $balance->free_coins_available_time);
   }
 
@@ -33,10 +33,12 @@ class MoneyServiceTest extends odUnitTestCase
     $deal->coins_count = 2;
     $deal->coins_type = COIN_BIG;
 
+	  $this->assertEqual(0, count($service->history($recipient)));
+	  $this->assertEqual(0, $service->balance($recipient)->purchased_big_coins_count);
+
     $transaction = $service->purchase($recipient, $deal);
 
 	  //transaction
-    $this->assertEqual(1, count($service->history($recipient)));
     $this->assertTrue($transaction->id);
     $this->assertEqual(null, $transaction->sender_id);
     $this->assertEqual($recipient->id, $transaction->recipient_id);
@@ -46,27 +48,23 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(null, $transaction->message);
     $this->assertTrue($transaction->ctime);
 	  //history
-	  $history = $service->history($recipient);
-	  $this->assertEqual(1, count($history));
+	  $this->assertEqual(1, count($service->history($recipient)));
 	  //balance
-	  $balance = $service->balance($recipient);
-	  $this->assertEqual(0, $balance->purchased_coins_count);
-	  $this->assertEqual(2, $balance->purchased_big_coins_count);
-	  $this->assertEqual(0, $balance->received_coins_count);
-	  $this->assertEqual(0, $balance->received_big_coins_count);
-	  $this->assertEqual(false, $balance->free_coins_available);
-	  $this->assertEqual(null, $balance->free_coins_available_time);
+	  $this->assertEqual(2, $service->balance($recipient)->purchased_big_coins_count);
   }
 
   function testTransfer()
   {
+	  $service = new MoneyService();
     $sender = $this->generator->user('sender');
+	  $service->purchase($sender, $this->_internalDeal(COIN_USUAL, 3));
     $recipient = $this->generator->user('recipient');
-    $service = new MoneyService();
+
+	  $this->assertEqual(3, $service->balance($sender)->purchased_coins_count);
+	  $this->assertEqual(0, $service->balance($recipient)->received_coins_count);
 
     $transaction = $service->transfer($sender, $recipient, COIN_USUAL, 3, 'foo');
 		//transaction
-    $this->assertEqual(1, count($service->history($recipient)));
     $this->assertTrue($transaction->id);
     $this->assertEqual($sender->id, $transaction->sender_id);
     $this->assertEqual($recipient->id, $transaction->recipient_id);
@@ -75,31 +73,35 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(3, $transaction->coins_count);
     $this->assertEqual('foo', $transaction->message);
     $this->assertTrue($transaction->ctime);
-	  //history
-	  $history = $service->history($recipient);
-	  $this->assertEqual(1, count($history));
-	  //sender balance
-	  $balance = $service->balance($sender);
-	  $this->assertEqual(-3, $balance->purchased_coins_count);
-	  $this->assertEqual(0, $balance->purchased_big_coins_count);
-	  $this->assertEqual(0, $balance->received_coins_count);
-	  $this->assertEqual(0, $balance->received_big_coins_count);
-	  $this->assertEqual(false, $balance->free_coins_available);
-	  $this->assertEqual(null, $balance->free_coins_available_time);
-	  //recipient balance
-	  $balance = $service->balance($recipient);
-	  $this->assertEqual(0, $balance->purchased_coins_count);
-	  $this->assertEqual(0, $balance->purchased_big_coins_count);
-	  $this->assertEqual(3, $balance->received_coins_count);
-	  $this->assertEqual(0, $balance->received_big_coins_count);
-	  $this->assertEqual(false, $balance->free_coins_available);
-	  $this->assertEqual(null, $balance->free_coins_available_time);
+	  //balance
+	  $this->assertEqual(1, count($service->history($recipient)));
+	  $this->assertEqual(0, $service->balance($sender)->purchased_coins_count);
+	  $this->assertEqual(3, $service->balance($recipient)->received_coins_count);
   }
+
+	function testTransfer_notEnoughMoney()
+	{
+		$service = new MoneyService();
+		$recipient = $this->generator->user('recipient');
+
+		$sender = $this->generator->user('sender');
+		$service->purchase($sender, $this->_internalDeal(COIN_USUAL, 2));
+		$this->assertFalse($service->transfer($sender, $recipient, COIN_USUAL, 3, 'foo'));
+
+		$sender = $this->generator->user('sender');
+		$service->purchase($sender, $this->_internalDeal(COIN_USUAL, 2));
+		$service->tryRestore($sender, $this->_internalDeal(COIN_USUAL, 1));
+		$this->assertTrue($service->transfer($sender, $recipient, COIN_USUAL, 3, 'foo'));
+	}
 
   function testPayment()
   {
-    $service = new MoneyService();
+	  $service = new MoneyService();
+	  $rich_guy = $this->generator->user();
+	  $service->purchase($rich_guy, $this->_internalDeal(COIN_BIG, 10));
+
     $sender = $this->generator->user();
+	  $service->transfer($rich_guy, $sender, COIN_BIG, 5, '');
 
     $deal = new PartnerDeal();
     $deal->coins_count = 5;
@@ -107,7 +109,6 @@ class MoneyServiceTest extends odUnitTestCase
 
     $transaction = $service->payment($sender, $deal);
 		//transaction
-    $this->assertEqual(1, count($service->history($sender)));
     $this->assertTrue($transaction->id);
     $this->assertEqual($sender->id, $transaction->sender_id);
     $this->assertEqual(null, $transaction->recipient_id);
@@ -117,17 +118,22 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(null, $transaction->message);
     $this->assertTrue($transaction->ctime);
 	  //history
-	  $history = $service->history($sender);
-	  $this->assertEqual(1, count($history));
+	  $this->assertEqual(2, count($service->history($sender)));
 	  //sender balance
-	  $balance = $service->balance($sender);
-	  $this->assertEqual(0, $balance->purchased_coins_count);
-	  $this->assertEqual(-5, $balance->purchased_big_coins_count);
-	  $this->assertEqual(0, $balance->received_coins_count);
-	  $this->assertEqual(0, $balance->received_big_coins_count);
-	  $this->assertEqual(false, $balance->free_coins_available);
-	  $this->assertEqual(null, $balance->free_coins_available_time);
+	  $this->assertEqual(0, $service->balance($sender)->received_big_coins_count);
   }
+
+	function testPayment_notEnoughMoney()
+	{
+		$service = new MoneyService();
+		$sender = $this->generator->user();
+
+		$deal = new PartnerDeal();
+		$deal->coins_count = 1;
+		$deal->coins_type = COIN_BIG;
+
+		$this->assertFalse($service->payment($sender, $deal));
+	}
 
   function testRestore()
   {
@@ -140,7 +146,6 @@ class MoneyServiceTest extends odUnitTestCase
 
     $transaction = $service->tryRestore($recipient, $deal);
 		//transaction
-    $this->assertEqual(1, count($service->history($recipient)));
     $this->assertTrue($transaction->id);
     $this->assertEqual(null, $transaction->sender_id);
     $this->assertEqual($recipient->id, $transaction->recipient_id);
@@ -150,15 +155,39 @@ class MoneyServiceTest extends odUnitTestCase
     $this->assertEqual(null, $transaction->message);
     $this->assertTrue($transaction->ctime);
 	  //history
-	  $history = $service->history($recipient);
-	  $this->assertEqual(1, count($history));
+	  $this->assertEqual(1, count($service->history($recipient)));
 	  //balance
 	  $balance = $service->balance($recipient);
-	  $this->assertEqual(0, $balance->purchased_coins_count);
-	  $this->assertEqual(0, $balance->purchased_big_coins_count);
-	  $this->assertEqual(0, $balance->received_coins_count);
-	  $this->assertEqual(0, $balance->received_big_coins_count);
-	  $this->assertEqual(true, $balance->free_coins_available);
+	  $this->assertEqual(1, $balance->free_coins_count);
 	  $this->assertEqual(true, (bool) $balance->free_coins_available_time);
   }
+
+	function testRestore_repeat()
+	{
+		$service = new MoneyService();
+		$recipient = $this->generator->user();
+
+		$deal = new InternalShopDeal();
+		$deal->coins_type = COIN_USUAL;
+		$deal->coins_count = 1;
+
+		$service->tryRestore($recipient, $deal);
+		$service->tryRestore($recipient, $deal);
+
+		$balance = $service->balance($recipient);
+		$this->assertEqual(1, $balance->free_coins_count);
+	}
+
+	/**
+	 * @param $coins_type
+	 * @param $coins_count
+	 * @return InternalShopDeal
+	 */
+	protected function _internalDeal($coins_type, $coins_count)
+	{
+		$deal = new InternalShopDeal();
+		$deal->coins_type = $coins_type;
+		$deal->coins_count = $coins_count;
+		return $deal;
+	}
 }

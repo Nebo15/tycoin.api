@@ -4,6 +4,8 @@ lmb_require('src/model/Balance.class.php');
 
 class MoneyService
 {
+	const FREE_COINS_RESTORE_PERIOD = 300;
+
 	function history(User $user)
 	{
 		return Transaction::findByUser($user);
@@ -11,6 +13,13 @@ class MoneyService
 
 	function transfer(User $sender, User $recipient, $coins_type, $coins_count, $message)
 	{
+		$balance = $this->balance($sender);
+		$available_coins_count = (COIN_USUAL == $coins_type)
+				? $balance->free_coins_count + $balance->purchased_coins_count
+				: $balance->purchased_big_coins_count;
+		if($available_coins_count < $coins_count)
+			return false;
+
 		$transaction               = new Transaction();
 		$transaction->sender_id    = $sender->id;
 		$transaction->recipient_id = $recipient->id;
@@ -24,6 +33,13 @@ class MoneyService
 
 	function payment(User $sender, PartnerDeal $deal)
 	{
+		$balance = $this->balance($sender);
+		$available_coins_count = (COIN_USUAL == $deal->coins_type)
+				? $balance->received_coins_count
+				: $balance->received_big_coins_count;
+		if($available_coins_count < $deal->coins_count)
+			return false;
+
 		$transaction               = new Transaction();
 		$transaction->sender_id    = $sender->id;
 		$transaction->recipient_id = null;
@@ -84,7 +100,10 @@ class MoneyService
 				elseif ($user->id == $transaction->sender_id)
 				{
 					if (COIN_USUAL == $transaction->coins_type)
-						$balance->purchased_coins_count -= $transaction->coins_count;
+					{
+						$balance->purchased_coins_count -= $transaction->coins_count + $balance->free_coins_count;
+						$balance->free_coins_count = 0;
+					}
 					else
 						$balance->purchased_big_coins_count -= $transaction->coins_count;
 				}
@@ -92,9 +111,9 @@ class MoneyService
 			elseif (Transaction::PAYMENT == $transaction->type)
 			{
 				if (COIN_USUAL == $transaction->coins_type)
-					$balance->purchased_coins_count -= $transaction->coins_count;
+					$balance->received_coins_count -= $transaction->coins_count;
 				else
-					$balance->purchased_big_coins_count -= $transaction->coins_count;
+					$balance->received_big_coins_count -= $transaction->coins_count;
 			}
 			elseif (Transaction::PURCHASE == $transaction->type)
 			{
@@ -102,6 +121,11 @@ class MoneyService
 					$balance->purchased_coins_count += $transaction->coins_count;
 				else
 					$balance->purchased_big_coins_count += $transaction->coins_count;
+			}
+			elseif (Transaction::RESTORE == $transaction->type)
+			{
+				$balance->free_coins_count = $transaction->coins_count;
+				$balance->free_coins_available_time = time() + self::FREE_COINS_RESTORE_PERIOD;
 			}
 		}
 
