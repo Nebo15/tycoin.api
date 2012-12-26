@@ -24,6 +24,8 @@ class AuthController extends BaseJsonController
   {
     $facebook = $this->toolkit->getFacebook();
     if(!$facebook->getUser()) {
+	    if(!session_id())
+		    session_start();
       $params['scope'] = $this->toolkit->getConf('facebook')['permissions'];
       $this->response->redirect($facebook->getLoginUrl($params));
       return 'Redirecting...';
