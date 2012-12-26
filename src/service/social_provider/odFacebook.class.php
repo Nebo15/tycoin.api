@@ -53,7 +53,7 @@ class odFacebook extends BaseFacebook implements odSocialServicesProviderInterfa
 
   protected function constructSessionVariableName($key) {
     $toolkit = lmbToolkit::instance();
-    return implode('_', array('fb', $toolkit->getUser() ? $toolkit->getUser()->id : rand(1, 1000), $key));
+    return implode('_', array('fb', $toolkit->getUser() ? $toolkit->getUser()->id : session_id(), $key));
   }
 
   function makeQuery($query)
