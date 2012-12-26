@@ -6,134 +6,144 @@ lmb_require('src/model/Day.class.php');
 
 class AuthController extends BaseJsonController
 {
-  function doGuestParameters()
-  {
-    $answer = new stdClass();
+	function doGuestParameters()
+	{
+		$answer = new stdClass();
 
-    $answer->facebook = new stdClass();
-    $answer->facebook->appid = $this->toolkit->getConf('facebook')['appId'];
-    $answer->facebook->namespace = $this->toolkit->getConf('facebook')['namespace'];
+		$answer->facebook            = new stdClass();
+		$answer->facebook->appid     = $this->toolkit->getConf('facebook')['appId'];
+		$answer->facebook->namespace = $this->toolkit->getConf('facebook')['namespace'];
 
-    $answer->twitter = new stdClass();
-    $answer->twitter->consumer_key = $this->toolkit->getConf('twitter')['consumer_key'];
+		$answer->twitter               = new stdClass();
+		$answer->twitter->consumer_key = $this->toolkit->getConf('twitter')['consumer_key'];
 
-    return $this->_answerOk($answer);
-  }
+		return $this->_answerOk($answer);
+	}
 
-  function doGuestMobileFacebookLogin()
-  {
-    $facebook = $this->toolkit->getFacebook();
-    if(!$facebook->getUser()) {
-	    if(!session_id())
-		    session_start();
-      $params['scope'] = $this->toolkit->getConf('facebook')['permissions'];
-      $this->response->redirect($facebook->getLoginUrl($params));
-      return 'Redirecting...';
-    } else {
-      $this->response->redirect('tycoin://index.html#profile:token=' . $facebook->getAccessToken());
-      return $this->_answerOk();
-    }
-  }
+	function doGuestMobileFacebookLogin()
+	{
+		$facebook = $this->toolkit->getFacebook();
 
-  function doGuestLogin()
-  {
-    if (!$this->request->isPost())
-      return $this->_answerNotPost();
+		if (!$facebook->getUser())
+		{
+			$params['scope']        = $this->toolkit->getConf('facebook')['permissions'];
+			$params['redirect_uri'] = $this->toolkit->getSiteUrl('/auth/mobile_facebook_login?storage_key=' .
+					$facebook->getStorageKey());
+			$this->toolkit->getLog()->info($facebook->getLoginUrl($params));
+			$this->response->redirect($facebook->getLoginUrl($params));
 
-    if (!$facebook_access_token = $this->toolkit->getTokenFromRequest())
-      return $this->_answerWithError('Token not given', null, 412);
+			return 'Redirecting...';
+		}
+		else
+		{
+			$this->response->redirect('tycoin://index.html#profile:token=' . $facebook->getAccessToken());
 
-    if (!$uid = $this->toolkit->getFacebook($facebook_access_token)->getUid($this->error_list))
-      return $this->_answerWithError($this->error_list, null, 403);
+			return $this->_answerOk();
+		}
+	}
 
-    $is_new_user = false;
-    if (!$user = User::findByFacebookUid($uid)) {
-      $user = $this->_register($facebook_access_token);
-      $is_new_user = true;
-    } else {
-      $user->facebook_access_token = $facebook_access_token;
-      $user->save();
-    }
+	function doGuestLogin()
+	{
+		if (!$this->request->isPost())
+			return $this->_answerNotPost();
 
-    $this->toolkit->setUser($user);
+		if (!$facebook_access_token = $this->toolkit->getTokenFromRequest())
+			return $this->_answerWithError('Token not given', null, 412);
 
-    if ($is_new_user)
-      $this->toolkit->doAsync('userCreate', $user->id);
+		if (!$uid = $this->toolkit->getFacebook($facebook_access_token)->getUid($this->error_list))
+			return $this->_answerWithError($this->error_list, null, 403);
 
-    $this->_processDeviceToken($user);
+		$is_new_user = false;
+		if (!$user = User::findByFacebookUid($uid))
+		{
+			$user        = $this->_register($facebook_access_token);
+			$is_new_user = true;
+		}
+		else
+		{
+			$user->facebook_access_token = $facebook_access_token;
+			$user->save();
+		}
 
-    $this->response->setCookie('token', $facebook_access_token, time() + 60 * 60 * 24 * 31);
+		$this->toolkit->setUser($user);
 
-    return $this->_answerOk($this->toolkit->getExportHelper()->exportUser($user));
-  }
+		if ($is_new_user)
+			$this->toolkit->doAsync('userCreate', $user->id);
 
-  function _register($facebook_access_token)
-  {
-    $user = new User();
-    $user->facebook_access_token = $facebook_access_token;
-    $profile = $this->toolkit->getFacebookProfile($user);
-    $user->import($profile->getInfo());
-    $user->save();
+		$this->_processDeviceToken($user);
 
-    $userpics = $profile->getPictures();
-    if (count($userpics)) {
-      $userpic_url = array_pop($userpics); // Returns biggest picture
-      $userpic_contents = $profile->getPictureContents($userpic_url);
-      $user->attachImage($userpic_contents);
-      $user->save();
-    }
+		$this->response->setCookie('token', $facebook_access_token, time() + 60 * 60 * 24 * 31);
 
-    return $user;
-  }
+		return $this->_answerOk($this->toolkit->getExportHelper()->exportUser($user));
+	}
 
-  function _processDeviceToken($user)
-  {
-    $device_token = $this->request->get('device_token');
-    if (!$device_token)
-      return;
+	function _register($facebook_access_token)
+	{
+		$user                        = new User();
+		$user->facebook_access_token = $facebook_access_token;
+		$profile                     = $this->toolkit->getFacebookProfile($user);
+		$user->import($profile->getInfo());
+		$user->save();
 
-    $token_obj = DeviceToken::findOneByToken($device_token);
-    if ($token_obj && $token_obj->user_id != $user->id) {
-      $token_obj->destroy();
-      $token_obj = null;
-    }
+		$userpics = $profile->getPictures();
+		if (count($userpics))
+		{
+			$userpic_url      = array_pop($userpics); // Returns biggest picture
+			$userpic_contents = $profile->getPictureContents($userpic_url);
+			$user->attachImage($userpic_contents);
+			$user->save();
+		}
 
-    if (!$token_obj) {
-      $token_obj = new DeviceToken();
-      $token_obj->import(
-      [
-        'user_id' => $user->id,
-        'token' => $device_token,
-        'logins_count' => 1
-      ]);
-    } else {
-      $token_obj->logins_count = $token_obj->logins_count++;
-    }
+		return $user;
+	}
 
-    $token_obj->save();
-  }
+	function _processDeviceToken($user)
+	{
+		$device_token = $this->request->get('device_token');
+		if (!$device_token)
+			return;
 
-  function doGuestIsLoggedIn()
-  {
-    if (!$this->toolkit->getTokenFromRequest())
-      return $this->_answerWithError('Token not given', null, 412);
+		$token_obj = DeviceToken::findOneByToken($device_token);
+		if ($token_obj && $token_obj->user_id != $user->id)
+		{
+			$token_obj->destroy();
+			$token_obj = null;
+		}
 
-    return $this->_answerOk($this->_isLoggedUser());
-  }
+		if (!$token_obj)
+		{
+			$token_obj = new DeviceToken();
+			$token_obj->import(['user_id' => $user->id, 'token' => $device_token, 'logins_count' => 1]);
+		}
+		else
+		{
+			$token_obj->logins_count = $token_obj->logins_count++;
+		}
 
-  function doUserLogout()
-  {
-    if ($this->session->valid())
-      $this->session->reset();
+		$token_obj->save();
+	}
 
-    $this->toolkit->resetUser();
+	function doGuestIsLoggedIn()
+	{
+		if (!$this->toolkit->getTokenFromRequest())
+			return $this->_answerWithError('Token not given', null, 412);
 
-    $this->response->removeCookie('token');
+		return $this->_answerOk($this->_isLoggedUser());
+	}
 
-    if ($device_token = $this->request->get('device_token'))
-      if ($token_obj = DeviceToken::findOneByToken($device_token))
-        $token_obj->destroy();
+	function doUserLogout()
+	{
+		if ($this->session->valid())
+			$this->session->reset();
 
-    return $this->_answerOk();
-  }
+		$this->toolkit->resetUser();
+
+		$this->response->removeCookie('token');
+
+		if ($device_token = $this->request->get('device_token'))
+			if ($token_obj = DeviceToken::findOneByToken($device_token))
+				$token_obj->destroy();
+
+		return $this->_answerOk();
+	}
 }

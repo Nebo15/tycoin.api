@@ -4,7 +4,7 @@ lmb_require('src/model/Balance.class.php');
 
 class MoneyService
 {
-	const FREE_COINS_RESTORE_PERIOD = 300;
+	const FREE_COINS_RESTORE_PERIOD = 60;
 
 	function history(User $user)
 	{

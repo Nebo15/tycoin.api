@@ -35,7 +35,7 @@ class PartnersController extends BaseJsonController
     return $this->_answerOk($offer);
   }
 
-  function doGuestBuy()
+  function doBuy()
   {
     (new MyController())->doBalance();
   }
