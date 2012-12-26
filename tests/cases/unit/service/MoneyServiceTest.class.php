@@ -94,6 +94,36 @@ class MoneyServiceTest extends odUnitTestCase
 		$this->assertTrue($service->transfer($sender, $recipient, COIN_USUAL, 3, 'foo'));
 	}
 
+	function testTransferToCode()
+	{
+		$service = new MoneyService();
+		$sender = $this->generator->user('sender');
+		$service->purchase($sender, $this->_internalDeal(COIN_USUAL, 3));
+		$code = 42;
+
+		$this->assertEqual(3, $service->balance($sender)->purchased_coins_count);
+
+		$transaction = $service->transferToCode($sender, $code, COIN_USUAL, 3, 'foo');
+		//transaction
+		$this->assertTrue($transaction->id);
+		$this->assertEqual($sender->id, $transaction->sender_id);
+		$this->assertEqual($code, $transaction->recipient_id);
+		$this->assertEqual(Transaction::TRANSFER, $transaction->type);
+		$this->assertEqual(COIN_USUAL, $transaction->coins_type);
+		$this->assertEqual(3, $transaction->coins_count);
+		$this->assertEqual('foo', $transaction->message);
+		$this->assertTrue($transaction->ctime);
+		//balance
+		$this->assertEqual(1, count($service->historyByCode($code)));
+		$this->assertEqual(0, $service->balance($sender)->purchased_coins_count);
+		$this->assertEqual(3, $service->balanceOfCode($code)->received_coins_count);
+	}
+
+	function testClaim()
+	{
+
+	}
+
   function testPayment()
   {
 	  $service = new MoneyService();
