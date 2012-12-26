@@ -86,7 +86,13 @@ class MoneyService
 
 	function claimCode(User $recipient, $code)
 	{
-
+		foreach($this->historyByCode($code) as $transaction)
+		{
+			/* @var $transaction Transaction */
+			$transaction->to_code = 0;
+			$transaction->recipient_id = $recipient->id;
+			$transaction->save();
+		}
 	}
 
 	protected function _balance($transactions, $user_id)

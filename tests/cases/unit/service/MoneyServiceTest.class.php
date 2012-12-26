@@ -121,7 +121,16 @@ class MoneyServiceTest extends odUnitTestCase
 
 	function testClaim()
 	{
+		$service = new MoneyService();
+		$sender = $this->generator->user('sender');
+		$recipient = $this->generator->user('recipient');
+		$service->purchase($sender, $this->_internalDeal(COIN_USUAL, 5));
 
+		$transaction = $service->transferToCode($sender, $code = 4242, COIN_USUAL, 5, 'claim');
+		$service->claimCode($recipient, $code);
+		//balance
+		$this->assertEqual(1, count($service->history($recipient)));
+		$this->assertEqual(5, $service->balance($recipient)->received_coins_count);
 	}
 
   function testPayment()
