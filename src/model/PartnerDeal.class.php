@@ -7,8 +7,9 @@ class PartnerDeal extends BaseModel
 
   public $id;
   public $shop_id;
-  public $title;
+	public $good;
+  public $description;
   public $coins_count;
   public $coins_type;
-  public $description;
+  public $image;
 }
