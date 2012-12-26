@@ -4,10 +4,14 @@ lmb_require('src/model/User.class.php');
 
 class Transaction extends BaseModel
 {
-  const TRANSFER = 1;
-  const PAYMENT = 2;
-  const PURCHASE = 3;
-  const RESTORE = 4;
+  const TRANSFER = 'transfer';
+  const PAYMENT = 'payment';
+  const PURCHASE = 'purchase';
+  const RESTORE = 'restore';
+
+	const RECIPIENT_USER = 'user';
+	const RECIPIENT_FB_USER = 'fb_user';
+	const RECIPIENT_CODE = 'code';
 
   protected $_default_sort_params = array('id' => 'desc');
   protected $_db_table_name = 'transaction';
@@ -15,6 +19,7 @@ class Transaction extends BaseModel
   public $type;
   public $sender_id;
   public $recipient_id;
+	public $recipient_type;
   public $coins_count;
   public $coins_type;
   public $ctime;

@@ -30,8 +30,8 @@ if(array_key_exists('HTTP_NAME', $_SERVER))
 
 lmb_env_setor('LIMB_APP_MODE' , 'production');
 
-define('COIN_USUAL', 1);
-define('COIN_BIG', 2);
+define('COIN_USUAL', 'usual');
+define('COIN_BIG', 'big');
 
 lmb_require('limb/toolkit/src/lmbToolkit.class.php');
 lmb_require('src/toolkit/odTools.class.php');
