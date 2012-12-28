@@ -1,5 +1,6 @@
 <?php
 lmb_require('src/controller/BaseJsonController.class.php');
+lmb_require('src/model/PartnerDeal.class.php');
 
 class PartnersController extends BaseJsonController
 {
