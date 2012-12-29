@@ -6,33 +6,49 @@ class PartnersController extends BaseJsonController
 {
   function doGuestDeals()
   {
-    return '['.$this->doGuestItem().']';
+	  $partners = $this->toolkit->getConf('partners')->partners;
+	  $answer = [];
+	  foreach($partners as $partner)
+	  {
+		  foreach($partner['deals'] as $deal)
+		  {
+			  unset($partner['deals']);
+			  $deal['shop'] = $partner;
+			  $answer[] = $deal;
+		  }
+	  }
+    return $this->_answerOk($answer);
   }
 
   function doGuestItem()
   {
-		$offer = $this->_getPartnerDeal()->exportForApi();
-    $offer->shop = new stdClass();
-    $offer->shop->title = 'Coffee House "Kiev"';
-    $offer->shop->location = "Lenina street, 4a";
-    return $this->_answerOk($offer);
+	  $id = $this->request->get('id');
+		return $this->_answerOk($this->_loadDeal($id));
   }
 
-  function doBuy()
+  function doGuestBuy()
   {
-    $this->toolkit->getMoneyService()->payment($this->_getUser(), $this->_getPartnerDeal());
-	  return $this->_answerOk($this->toolkit->getMoneyService()->balance($this->_getUser()));
+	  $deal = (new PartnerDeal())->import((array) $this->_loadDeal($this->request->get('id')));
+    $transaction = $this->toolkit->getMoneyService()->payment($this->_getUser(), $deal)->getHash();
+	  if($transaction)
+	    return $this->_answerOk($transaction);
+	  else
+		  return $this->_answerWithError('You have no enough coins');
   }
 
-	function _getPartnerDeal()
+	protected function _loadDeal($id)
 	{
-		$offer = new PartnerDeal();
-		$offer->id = 1;
-		$offer->good = "Cappuccino";
-		$offer->description = 'Free coffee for all nice people!';
-		$offer->image = 'http://files.softicons.com/download/food-drinks-icons/cappuccino-icons-by-soundforge/png/256x256/Cappuccino_Illy.png';
-		$offer->coins_count = 1;
-		$offer->coins_type = 1;
-		return $offer;
+		foreach($this->toolkit->getConf('partners')->partners as $partner)
+		{
+			foreach($partner['deals'] as $deal)
+			{
+				if($deal['id'] == $id)
+				{
+					unset($partner['deals']);
+					$deal['shop'] = $partner;
+					return $deal;
+				}
+			}
+		}
 	}
 }

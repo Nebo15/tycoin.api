@@ -4,12 +4,18 @@ lmb_require('src/model/Transaction.class.php');
 
 class PartnersControllerTest extends odControllerTestCase
 {
+	use odEntityAssertions;
+
 	protected $controller_class = 'PartnersController';
 
 	function testDeals()
 	{
-		$response = $this->get('is_logged_in', ['token' => $this->main_user->facebook_access_token]);
+		$response = $this->get('deals', ['token' => $this->main_user->facebook_access_token]);
 		if ($this->assertResponse(200))
-			$this->assertFalse($response->result);
+		{
+			$this->assertEqual(2, count($response->result));
+			$this->assertJsonPartnerDeal($response->result[0]);
+			$this->assertJsonPartnerDeal($response->result[1]);
+		}
 	}
 }

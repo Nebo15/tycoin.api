@@ -17,6 +17,12 @@ class AuthControllerTest extends odControllerTestCase
       $this->assertFalse($response->result);
   }
 
+	function testMobileFacebookLogin()
+	{
+		$response = $this->get('mobile_facebook_login');
+		var_dump($response->result);
+	}
+
   /**
    * @api description Authorizes and returns User.
    * @api input param string[118] token Facebook access token

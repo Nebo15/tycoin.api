@@ -1,6 +1,6 @@
 <?php
 $conf = [
-	'shops' => [
+	'partners' => [
 		[
 			'id' => 1,
 			'title' => 'Coffee House "Kiev"',

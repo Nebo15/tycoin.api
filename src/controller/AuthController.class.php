@@ -29,7 +29,6 @@ class AuthController extends BaseJsonController
 			$params['scope']        = $this->toolkit->getConf('facebook')['permissions'];
 			$params['redirect_uri'] = $this->toolkit->getSiteUrl('/auth/mobile_facebook_login?storage_key=' .
 					$facebook->getStorageKey());
-			$this->toolkit->getLog()->info($facebook->getLoginUrl($params));
 			$this->response->redirect($facebook->getLoginUrl($params));
 
 			return 'Redirecting...';
@@ -37,7 +36,6 @@ class AuthController extends BaseJsonController
 		else
 		{
 			$this->response->redirect('tycoin://index.html#profile:token=' . $facebook->getAccessToken());
-
 			return $this->_answerOk();
 		}
 	}

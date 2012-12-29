@@ -48,6 +48,11 @@ class Transaction extends BaseModel
 		return User::findByIds($this->recipient_id);
 	}
 
+	function getHash()
+	{
+		return substr(md5($this->sender_id.$this->id), 6);
+	}
+
 	static function findByUser(User $user)
 	{
 		$criteria = lmbSQLCriteria::equal('sender_id', $user->id)->addOr(lmbSQLCriteria::equal('recipient_id', $user->id));
