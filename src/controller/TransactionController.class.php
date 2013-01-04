@@ -6,7 +6,7 @@ class TransactionController extends BaseJsonController
 {
   function doTransfer()
   {
-    if(!$this->request->isPost())
+	  if(!$this->request->isPost())
       return $this->_answerNotPost();
 
     $transaction = new Transaction();

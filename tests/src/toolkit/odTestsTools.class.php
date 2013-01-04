@@ -93,11 +93,6 @@ class odTestsTools extends lmbAbstractTools
       $user->location = $info['current_location'];
       $user->birthday = $info['birthday'];
 
-      $settings = $user->getSettings();
-      $settings->social_share_facebook = 1;
-      $settings->social_share_twitter = 1;
-      $user->setSettings($settings);
-
       $twitter_credentials = (new odObjectMother())->twitter_credentials()[$key % 2];
       $user->twitter_uid = $twitter_credentials['uid'];
       $user->twitter_access_token = $twitter_credentials['access_token'];

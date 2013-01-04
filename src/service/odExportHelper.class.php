@@ -70,7 +70,8 @@ class odExportHelper
 
   function exportFacebookUserItems(array $facebook_users)
   {
-    $exported_list = [];
+	  $users_with_app = [];
+	  $other_users = [];
     $users = User::findByFacebookUid(lmbArrayHelper::getColumnValues('facebook_uid', $facebook_users));
     $users = lmbArrayHelper::makeKeysFromColumnValues('facebook_uid', $users);
 
@@ -86,13 +87,15 @@ class odExportHelper
       {
         $user = $users[$exported->uid];
         $exported->user = $user->exportForApi();
+	      $users_with_app[] = $exported;
       }
       else
+      {
         $exported->user = null;
-
-      $exported_list[] = $exported;
+	      $other_users[] = $exported;
+      }
     }
-    return $exported_list;
+	  return array_merge($users_with_app, $other_users);
   }
 
   function exportShopListItem(Shop $shop)

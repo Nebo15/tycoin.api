@@ -73,26 +73,6 @@ class User extends BaseModel
     return $result;
   }
 
-  function setSettings(UserSettings $settings)
-  {
-    $this->user_settings_id = $settings->id;
-  }
-
-  /**
-   * @return UserSettings
-   */
-  function getSettings()
-  {
-    if(!$item = UserSettings::findById($this->user_settings_id))
-    {
-      $item = UserSettings::createDefault();
-      $item->save();
-      $this->user_settings_id = $item->id;
-      $this->save();
-    }
-    return $item;
-  }
-
   function getDeviceTokens()
   {
     return DeviceToken::find(lmbSQLCriteria::equal('user_id', $this->id));
