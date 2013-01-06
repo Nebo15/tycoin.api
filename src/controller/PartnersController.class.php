@@ -33,8 +33,10 @@ class PartnersController extends BaseJsonController
 
 		$deal = (new PartnerDeal())->import((array)$this->_loadDeal($this->request->get('id')));
 		$transaction = $this->toolkit->getMoneyService()->payment($this->_getUser(), $deal);
-		if ($transaction)
+		if ($transaction) {
+      // $this->toolkit->getFacebookProfile($this->_getUser())->shareExchange($transaction, $deal);
 			return $this->_answerOk($transaction->getHash());
+    }
 		else
 			return $this->_answerWithError('You have no enough coins');
 	}
