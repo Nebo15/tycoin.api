@@ -9,8 +9,11 @@ class TransactionController extends BaseJsonController
 		if (!$this->request->isPost())
 			return $this->_answerNotPost();
 
-		$uid = $this->request->get('uid');
+		$this->_checkPropertiesInRequest(array('uid', 'type', 'message'));
+		if (!$this->error_list->isEmpty())
+			return $this->_answerWithError($this->error_list->export());
 
+		$uid = $this->request->get('uid');
 		if (!$recipient = User::findByFacebookUid($uid))
 		{
 			$recipient = new User();
