@@ -4,7 +4,7 @@ lmb_require('src/model/PartnerDeal.class.php');
 
 class PartnersController extends BaseJsonController
 {
-  function doGuestDeals()
+  function doDeals()
   {
 	  $partners = $this->toolkit->getConf('partners')->partners;
 	  $answer = [];
@@ -20,14 +20,17 @@ class PartnersController extends BaseJsonController
     return $this->_answerOk($answer);
   }
 
-  function doGuestItem()
+  function doItem()
   {
 	  $id = $this->request->get('id');
 		return $this->_answerOk($this->_loadDeal($id));
   }
 
-  function doGuestBuy()
+  function doBuy()
   {
+	  if (!$this->request->isPost())
+		  return $this->_answerNotPost();
+	  
 	  $deal = (new PartnerDeal())->import((array) $this->_loadDeal($this->request->get('id')));
     $transaction = $this->toolkit->getMoneyService()->payment($this->_getUser(), $deal)->getHash();
 	  if($transaction)
