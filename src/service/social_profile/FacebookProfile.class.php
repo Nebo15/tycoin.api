@@ -155,7 +155,7 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
 		return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
 			'name'        => "Thank you!",
 			'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
-      'link'        => lmbToolkit::instance()->getSiteUrl(),
+      'link'        => lmbToolkit::instance()->getSiteUrl() . 'pages/redirect',
 			'description' => $transaction->message
 		));
 	}
