@@ -49,9 +49,7 @@ class User extends BaseModel
     $validator = new lmbValidator();
     $validator->addRequiredRule('name');
     $validator->addRequiredRule('facebook_uid');
-    $validator->addRequiredRule('facebook_access_token');
     $validator->addRequiredRule('facebook_profile_utime');
-    $validator->addRequiredRule('timezone');
     $validator->addRequiredRule('sex');
     $validator->addRule(new lmbValidValueRule('sex', array_values(self::getSexTypes())), 'Wrong sex value');
     $validator->addRequiredRule('birthday');

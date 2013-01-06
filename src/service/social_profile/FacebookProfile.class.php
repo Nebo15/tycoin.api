@@ -72,6 +72,13 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
     return self::_mapFacebookInfo($this->getInfo_Raw());
   }
 
+	public function getFriendInfo($uid)
+	{
+		$raw = $this->provider->makeQuery('SELECT '.implode(',', self::_getUserFacebookFieldsMap()).' FROM user WHERE uid = '.$uid);
+		lmb_assert_true(count($raw));
+		return $this->_mapFacebookInfo($raw[0]);
+	}
+
   public function getFriends()
   {
     $fields = implode(',', self::_getUserFacebookFieldsMap());
@@ -139,12 +146,11 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
     ))['id'];
   }
 
-  public function shareTransaction(Transaction $transaction)
+  public function shareTransaction(Transaction $transaction, $recipient)
   {
-    return $this->provider->api("/me/feed", "post", array(
-      'name'        => "Thank you, %username%",
+	  return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
+      'name'        => "Thank you!",
       'picture'     => 'http://www.olympiacandy.com/uploadmedia/images/gold-coin-thank-you-1072-L.jpg',
-      'link'        => $this->_getPageUrl($transaction),
       'description' => $transaction->message,
     ));
   }
