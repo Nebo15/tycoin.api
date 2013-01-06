@@ -17,4 +17,9 @@ class PagesController extends lmbController
   {
     $this->response->setCode(404);
   }
+
+  function doRedirect()
+  {
+
+  }
 }
