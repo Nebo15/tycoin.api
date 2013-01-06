@@ -161,15 +161,15 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
 	}
 
   // OG Action here
-  public function shareTransaction(Transaction $transaction, $deal)
-  {
-    lmb_assert_true($recipient->facebook_uid);
-    return $this->provider->api("/me/feed", "post", array(
-      'name'        => "I've just exchanged kindness for " . $deal->good,
-      'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
-      'description' => "You can find me at " . $deal->shop->title
-    ));
-  }
+  // public function shareTransaction(Transaction $transaction, $deal)
+  // {
+  //   lmb_assert_true($recipient->facebook_uid);
+  //   return $this->provider->api("/me/feed", "post", array(
+  //     'name'        => "I've just exchanged kindness for " . $deal->good,
+  //     'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
+  //     'description' => "You can find me at " . $deal->shop->title
+  //   ));
+  // }
 
 	protected function _deleteBuiltInLike($like_instance_id)
 	{
