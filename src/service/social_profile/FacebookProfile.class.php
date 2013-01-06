@@ -154,7 +154,6 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
 		lmb_assert_true($recipient->facebook_uid);
 		return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
 			'name' => "Thank you!",
-			'caption' => $transaction->message,
 			'picture' => 'http://www.olympiacandy.com/uploadmedia/images/gold-coin-thank-you-1072-L.jpg',
 			'description' => $transaction->message
 		));
