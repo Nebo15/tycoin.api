@@ -62,6 +62,7 @@ class User extends BaseModel
     $result->id = $this->id;
     $result->name = $this->name;
     $result->sex = $this->sex;
+	  $result->facebook_uid = $this->facebook_uid;
     foreach ($this->getImages() as $image_width => $image) {
       $result->$image_width = $image ?: lmbToolkit::instance()->getStaticUrl("default_{$image_width}.png");
     }
