@@ -6,15 +6,20 @@ lmb_require('src/model/Transaction.class.php');
 
 class PagesController extends lmbController
 {
-  function doTransaction()
-  {
-    $id = $this->request->get('id');
+	function doTransaction()
+	{
+		$id = $this->request->get('id');
+		if (!$this->transaction = Transaction::findById($id))
+			return $this->forwardTo404();
 
-    $this->transaction = Transaction::findById($id);
-  }
+		if (Transaction::TRANSFER != $this->transaction->type)
+			return $this->forwardTo404();
 
-  function doNotFound()
-  {
-    $this->response->setCode(404);
-  }
+
+	}
+
+	function doNotFound()
+	{
+		$this->response->setCode(404);
+	}
 }

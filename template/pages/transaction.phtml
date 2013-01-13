@@ -1,7 +1,8 @@
 {{wrap with="layout.phtml"}}
 {{into slot="meta"}}
-<meta property="og:type" content="{$#facebook_app_namespace}:Coin" />
-<meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction" />
+<meta property="fb:app_id" content="{$#facebook_app"/>
+<meta property="og:type" content="{$#facebook_app_namespace}:Coin"/>
+<meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction"/>
 {{/into}}
 {{into slot="content"}}
 <h1>Transaction #{$#transaction.id}</h1>

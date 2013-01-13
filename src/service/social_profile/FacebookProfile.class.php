@@ -149,27 +149,32 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
 		))['id'];
 	}
 
-	public function shareTransaction(Transaction $transaction, $recipient)
+	public function shareTransaction(Transaction $transaction, User $recipient)
 	{
 		lmb_assert_true($recipient->facebook_uid);
-		return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
-			'name'        => "Thank you!",
-			'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
-      'link'        => lmbToolkit::instance()->getSiteUrl() . '/redirect.html',
-			'description' => $transaction->message
-		));
+		return $this->provider->api("/me/" . $this->namespace . ":send", "post", array(
+			'coin' => $this->_getPageUrl($transaction),
+			'profile' => 'http://facebook.com/' . $recipient->facebook_uid
+		))['id'];
+
+//		return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
+//			'name'        => "Thank you!",
+//			'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
+//      'link'        => lmbToolkit::instance()->getSiteUrl() . '/redirect.html',
+//			'description' => $transaction->message
+//		));
 	}
 
-  // OG Action here
-  // public function shareTransaction(Transaction $transaction, $deal)
-  // {
-  //   lmb_assert_true($recipient->facebook_uid);
-  //   return $this->provider->api("/me/feed", "post", array(
-  //     'name'        => "I've just exchanged kindness for " . $deal->good,
-  //     'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
-  //     'description' => "You can find me at " . $deal->shop->title
-  //   ));
-  // }
+	// OG Action here
+	// public function shareTransaction(Transaction $transaction, $deal)
+	// {
+	//   lmb_assert_true($recipient->facebook_uid);
+	//   return $this->provider->api("/me/feed", "post", array(
+	//     'name'        => "I've just exchanged kindness for " . $deal->good,
+	//     'picture'     => 'http://thx.onedayofmine.com/images/' . $transaction->coins_type . '-coin.jpg',
+	//     'description' => "You can find me at " . $deal->shop->title
+	//   ));
+	// }
 
 	protected function _deleteBuiltInLike($like_instance_id)
 	{
