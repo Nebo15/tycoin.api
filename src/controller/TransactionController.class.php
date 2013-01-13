@@ -25,6 +25,8 @@ class TransactionController extends BaseJsonController
 		$coins_type = $this->request->get('type') == 'big' ? COIN_BIG : COIN_USUAL;
 		$message = $this->request->get('message');
 		$transaction = $this->toolkit->getMoneyService()->transfer($this->_getUser(), $recipient, $coins_type, 1, $message);
+
+		$this->toolkit->getDefaultDbConnection()->commitTransaction();
 		$this->toolkit->getFacebookProfile($this->_getUser())->shareTransaction($transaction, $recipient);
 
 		return $this->_answerOk($this->toolkit->getMoneyService()->balance($this->_getUser()));
