@@ -50,8 +50,10 @@ class TransactionController extends BaseJsonController
 
 	function doHistory()
 	{
+		list($from, $to, $limit) = $this->_getFromToLimitations();
+
 		$answer = [];
-		foreach ((new MoneyService())->history($this->_getUser()) as $transaction)
+		foreach ((new MoneyService())->historyWithLimitation($this->_getUser(), $from, $to, $limit) as $transaction)
 		{
 			$transaction = $transaction->exportForApi();
 			if ($transaction->sender_id)

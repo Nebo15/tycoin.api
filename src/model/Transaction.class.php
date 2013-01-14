@@ -5,9 +5,9 @@ lmb_require('src/model/User.class.php');
 class Transaction extends BaseModel
 {
 	const TRANSFER = 'transfer';
-	const PAYMENT  = 'payment';
+	const PAYMENT = 'payment';
 	const PURCHASE = 'purchase';
-	const RESTORE  = 'restore';
+	const RESTORE = 'restore';
 
 	protected $_default_sort_params = array('id' => 'desc');
 	protected $_db_table_name = 'transaction';
@@ -50,7 +50,7 @@ class Transaction extends BaseModel
 
 	function getHash()
 	{
-		return substr(md5($this->sender_id.$this->id), 6);
+		return substr(md5($this->sender_id . $this->id), 6);
 	}
 
 	static function findByUser(User $user)
@@ -58,6 +58,19 @@ class Transaction extends BaseModel
 		$criteria = lmbSQLCriteria::equal('sender_id', $user->id)->addOr(lmbSQLCriteria::equal('recipient_id', $user->id));
 
 		return Transaction::find($criteria, ['id' => 'DESC']);
+	}
+
+	static function findByUserWithLimitation(User $user, $from_id, $to_id, $limit)
+	{
+		$criteria = lmbSQLCriteria::equal('sender_id', $user->id)->addOr(lmbSQLCriteria::equal('recipient_id', $user->id));
+
+		if ($from_id)
+			$criteria->add(lmbSQLCriteria::less('id', $from_id));
+		if ($to_id)
+			$criteria->add(lmbSQLCriteria::greater('id', $to_id));
+
+		return Transaction::find($criteria, ['id' => 'DESC'])
+				->paginate(0, (!$limit || $limit > 100) ? 100 : $limit);
 	}
 
 	static function findByCode($code)
@@ -69,7 +82,7 @@ class Transaction extends BaseModel
 
 	function exportForApi(array $properties = null)
 	{
-		$exported       = parent::exportForApi(['id', 'sender_id', 'recipient_id', 'type', 'coins_type', 'coins_count', 'message']);
+		$exported = parent::exportForApi(['id', 'sender_id', 'recipient_id', 'type', 'coins_type', 'coins_count', 'message']);
 		$exported->time = $this->ctime;
 
 		return $exported;

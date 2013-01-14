@@ -11,6 +11,11 @@ class MoneyService
 		return Transaction::findByUser($user);
 	}
 
+	function historyWithLimitation(User $user, $from, $to, $limit)
+	{
+		return Transaction::findByUserWithLimitation($user, $from, $to, $limit);
+	}
+
 	function transfer(User $sender, User $recipient, $coins_type, $coins_count, $message)
 	{
 		return $this->_transfer($sender, $recipient->id, $coins_type, $coins_count, $message, false);
