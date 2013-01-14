@@ -18,48 +18,48 @@ class MoneyService
 
 	function payment(User $sender, PartnerDeal $deal)
 	{
-		$balance               = $this->balance($sender);
+		$balance = $this->balance($sender);
 		$available_coins_count = (COIN_USUAL == $deal->coins_type) ? $balance->received_coins_count :
 				$balance->received_big_coins_count;
 		if ($available_coins_count < $deal->coins_count)
 			return false;
 
-		$transaction               = new Transaction();
-		$transaction->sender_id    = $sender->id;
+		$transaction = new Transaction();
+		$transaction->sender_id = $sender->id;
 		$transaction->recipient_id = null;
-		$transaction->type         = Transaction::PAYMENT;
-		$transaction->coins_type   = $deal->coins_type;
-		$transaction->coins_count  = $deal->coins_count;
-		$transaction->message      = '';
+		$transaction->type = Transaction::PAYMENT;
+		$transaction->coins_type = $deal->coins_type;
+		$transaction->coins_count = $deal->coins_count;
+		$transaction->message = $deal->good;
 
 		return $transaction->save();
 	}
 
 	/**
-	 * @param User $recipient
+	 * @param User             $recipient
 	 * @param InternalShopDeal $deal
 	 * @return Transaction
 	 */
 	function purchase(User $recipient, InternalShopDeal $deal)
 	{
-		$transaction               = new Transaction();
-		$transaction->sender_id    = null;
+		$transaction = new Transaction();
+		$transaction->sender_id = null;
 		$transaction->recipient_id = $recipient->id;
-		$transaction->type         = Transaction::PURCHASE;
-		$transaction->coins_type   = $deal->coins_type;
-		$transaction->coins_count  = $deal->coins_count;
+		$transaction->type = Transaction::PURCHASE;
+		$transaction->coins_type = $deal->coins_type;
+		$transaction->coins_count = $deal->coins_count;
 
 		return $transaction->save();
 	}
 
 	function tryRestore(User $recipient, InternalShopDeal $deal)
 	{
-		$transaction               = new Transaction();
-		$transaction->sender_id    = null;
+		$transaction = new Transaction();
+		$transaction->sender_id = null;
 		$transaction->recipient_id = $recipient->id;
-		$transaction->type         = Transaction::RESTORE;
-		$transaction->coins_type   = $deal->coins_type;
-		$transaction->coins_count  = $deal->coins_count;
+		$transaction->type = Transaction::RESTORE;
+		$transaction->coins_type = $deal->coins_type;
+		$transaction->coins_count = $deal->coins_count;
 
 		return $transaction->save();
 	}
@@ -86,7 +86,7 @@ class MoneyService
 
 	function claimCode(User $recipient, $code)
 	{
-		foreach($this->historyByCode($code) as $transaction)
+		foreach ($this->historyByCode($code) as $transaction)
 		{
 			/* @var $transaction Transaction */
 			$transaction->to_code = 0;
@@ -139,7 +139,7 @@ class MoneyService
 			}
 			elseif (Transaction::RESTORE == $transaction->type)
 			{
-				$balance->free_coins_count          = $transaction->coins_count;
+				$balance->free_coins_count = $transaction->coins_count;
 				$balance->free_coins_available_time = time() + self::FREE_COINS_RESTORE_PERIOD;
 			}
 		}
@@ -149,20 +149,20 @@ class MoneyService
 
 	protected function _transfer(User $sender, $recipient_id, $coins_type, $coins_count, $message, $to_code)
 	{
-		$balance               = $this->balance($sender);
+		$balance = $this->balance($sender);
 		$available_coins_count = (COIN_USUAL == $coins_type) ?
 				$balance->free_coins_count + $balance->purchased_coins_count : $balance->purchased_big_coins_count;
 		if ($available_coins_count < $coins_count)
 			return false;
 
-		$transaction               = new Transaction();
-		$transaction->sender_id    = $sender->id;
+		$transaction = new Transaction();
+		$transaction->sender_id = $sender->id;
 		$transaction->recipient_id = $recipient_id;
-		$transaction->type         = Transaction::TRANSFER;
-		$transaction->to_code      = (int)$to_code;
-		$transaction->coins_type   = $coins_type;
-		$transaction->coins_count  = $coins_count;
-		$transaction->message      = $message;
+		$transaction->type = Transaction::TRANSFER;
+		$transaction->to_code = (int)$to_code;
+		$transaction->coins_type = $coins_type;
+		$transaction->coins_count = $coins_count;
+		$transaction->message = $message;
 
 		return $transaction->save();
 	}
