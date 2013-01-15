@@ -53,6 +53,18 @@ class MoneyServiceTest extends odUnitTestCase
 	  $this->assertEqual(2, $service->balance($recipient)->purchased_big_coins_count);
   }
 
+	function testHistory()
+	{
+		$service = new MoneyService();
+		$sender = $this->generator->user('sender');
+		$transaction1 = $service->purchase($sender, $this->_internalDeal(COIN_USUAL, 3));
+		$transaction2 = $service->purchase($sender, $this->_internalDeal(COIN_USUAL, 3));
+		$history = $service->history($sender);
+		$this->assertEqual(2, count($history));
+		$this->assertEqual($transaction1->id, $history[0]->id);
+		$this->assertEqual($transaction2->id, $history[1]->id);
+	}
+
   function testTransfer()
   {
 	  $service = new MoneyService();
@@ -182,6 +194,9 @@ class MoneyServiceTest extends odUnitTestCase
     $deal = new InternalShopDeal();
     $deal->coins_type = COIN_USUAL;
     $deal->coins_count = 1;
+
+	  $balance = $service->balance($recipient);
+	  $this->assertEqual(0, $balance->free_coins_count);
 
     $transaction = $service->tryRestore($recipient, $deal);
 		//transaction

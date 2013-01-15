@@ -57,7 +57,7 @@ class Transaction extends BaseModel
 	{
 		$criteria = lmbSQLCriteria::equal('sender_id', $user->id)->addOr(lmbSQLCriteria::equal('recipient_id', $user->id));
 
-		return Transaction::find($criteria, ['id' => 'DESC']);
+		return Transaction::find($criteria, ['id' => 'ASC']);
 	}
 
 	static function findByUserWithLimitation(User $user, $from_id, $to_id, $limit)
