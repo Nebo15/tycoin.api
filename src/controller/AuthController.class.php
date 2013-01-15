@@ -3,6 +3,7 @@ lmb_require('src/controller/BaseJsonController.class.php');
 lmb_require('src/model/Day.class.php');
 lmb_require('src/model/DeviceToken.class.php');
 lmb_require('src/model/Day.class.php');
+lmb_require('src/service/MoneyService.class.php');
 
 class AuthController extends BaseJsonController
 {
@@ -91,6 +92,8 @@ class AuthController extends BaseJsonController
 			$user->attachImage($userpic_contents);
 			$user->save();
 		}
+
+		(new MoneyService())->tryRestore($user, InternalShopDeal::freeCoinDeal());
 
 		return $user;
 	}
