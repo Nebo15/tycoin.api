@@ -22,6 +22,14 @@ $conf = [
 					'coins_count' => 1,
 					'coins_type' => COIN_USUAL
 				],
+				[
+					'id' => 3,
+					'good' => 'Kopi Luwak coffee',
+					'description' => 'The most expensive coffee for all nice people!',
+					'image' => 'http://www.premiumluwak.com/wp-content/uploads/wpsc/product_images/Pro_Large_Raw.jpg',
+					'coins_count' => 99,
+					'coins_type' => COIN_USUAL
+				],
 			]
 		]
 	]
