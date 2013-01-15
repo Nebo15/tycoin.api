@@ -3,62 +3,21 @@ lmb_require(taskman_prop('PROJECT_DIR').'setup.php');
 
 lmb_require('src/model/User.class.php');
 lmb_require('src/model/DeviceToken.class.php');
-lmb_require('src/model/DeviceNotification.class.php');
+lmb_require('src/model/InternalShopDeal.class.php');
+lmb_require('src/service/MoneyService.class.php');
 
-/**
- * @alias od_calc_interest
- */
-function task_od_calc_ratings()
+function task_restore_free_coin()
 {
-  lmb_require('src/service/InterestCalculator.class.php');
-
-  $calc = new InterestCalculator();
-  $calc->deleteUnpinnedDays();
-  $calc->fillRating();
-}
-
-function task_od_amazon_cloudwatch_update()
-{
-  $acw = lmbToolkit::instance()->createAmazonService('CloudWatch');
-
-  function errors_count_requests_log()
-  {
-    $errors_count = RequestsLogRecord::find(array('criteria' => lmbSQLCriteria::equal('code', 500)))->count();
-
-    return array(array(
-      'MetricName'  => 'ErrorsCountFromRequestsLog' ,
-      'Dimensions'  => array(array('Name' => 'Host', 'Value' => gethostname())),
-      'Value'       => $errors_count,
-      'Unit'        => 'Count',
-      'Timestamp'   => date( DATE_RFC822)
-    ));
-  }
-
-  echo "Calc errors_count_requests_log...";
-  $acw->batch()->put_metric_data ('OD' ,errors_count_requests_log());
-  echo 'SUCCESS'.PHP_EOL;
-
-  echo "Sending...";
-  $responses = $acw->batch()->send();
-    if(!$responses->areOK())
-      foreach($responses as $response)
-        if(!$response->isOk())
-          throw new lmbException('Error on file uploading: '.$response->body->Message);
-
-  echo 'SUCCESS'.PHP_EOL;
-}
-
-function task_od_close_old_days()
-{
-  echo 'Search for old days...';
-  $users = User::findUsersWithOldDays();
-  echo 'DONE'.PHP_EOL;
-  foreach($users as $user)
-  {
-    $user->setCurrentDayId(null);
-    $user->save();
-    echo "Removed current day fo user #".$user->id.PHP_EOL;
-  }
+	$service = new MoneyService();
+	foreach(User::find() as $user)
+	{
+		taskman_msg('User #'.$user->id.'...');
+		$transaction = $service->tryRestore($user, InternalShopDeal::freeCoinDeal());
+		if(!$transaction)
+			taskman_msg("SKIPPED".PHP_EOL);
+		else
+			taskman_msg("transaction #".$transaction->id.PHP_EOL);
+	}
 }
 
 function task_od_apns_feedback()

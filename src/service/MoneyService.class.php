@@ -59,6 +59,10 @@ class MoneyService
 
 	function tryRestore(User $recipient, InternalShopDeal $deal)
 	{
+		$balance = $this->balance($recipient);
+		if($balance->free_coins_count == $deal->coins_count)
+			return;
+		
 		$transaction = new Transaction();
 		$transaction->sender_id = null;
 		$transaction->recipient_id = $recipient->id;

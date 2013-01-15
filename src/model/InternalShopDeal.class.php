@@ -47,4 +47,9 @@ class InternalShopDeal
 				return $deal;
 		}
 	}
+
+	static function freeCoinDeal()
+	{
+		return self::find()[0];
+	}
 }
