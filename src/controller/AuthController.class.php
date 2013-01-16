@@ -3,6 +3,7 @@ lmb_require('src/controller/BaseJsonController.class.php');
 lmb_require('src/model/Day.class.php');
 lmb_require('src/model/DeviceToken.class.php');
 lmb_require('src/model/Day.class.php');
+lmb_require('src/model/InternalShopDeal.class.php');
 lmb_require('src/service/MoneyService.class.php');
 
 class AuthController extends BaseJsonController
