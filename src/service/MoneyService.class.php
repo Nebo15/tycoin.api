@@ -117,34 +117,34 @@ class MoneyService
 				if ($user_id == $transaction->recipient_id)
 				{
 					if (COIN_USUAL == $transaction->coins_type)
-						$balance->received_coins_count += $transaction->coins_count;
+						$balance->received_coins_count += (int) $transaction->coins_count;
 					else
-						$balance->received_big_coins_count += $transaction->coins_count;
+						$balance->received_big_coins_count += (int) $transaction->coins_count;
 				}
 				elseif ($user_id == $transaction->sender_id)
 				{
 					if (COIN_USUAL == $transaction->coins_type)
 					{
-						$balance->purchased_coins_count -= $transaction->coins_count + $balance->free_coins_count;
+						$balance->purchased_coins_count -= (int) $transaction->coins_count - (int) $balance->free_coins_count;
 						$balance->free_coins_count = 0;
 					}
 					else
-						$balance->purchased_big_coins_count -= $transaction->coins_count;
+						$balance->purchased_big_coins_count -= (int) $transaction->coins_count;
 				}
 			}
 			elseif (Transaction::PAYMENT == $transaction->type)
 			{
 				if (COIN_USUAL == $transaction->coins_type)
-					$balance->received_coins_count -= $transaction->coins_count;
+					$balance->received_coins_count -= (int) $transaction->coins_count;
 				else
-					$balance->received_big_coins_count -= $transaction->coins_count;
+					$balance->received_big_coins_count -= (int) $transaction->coins_count;
 			}
 			elseif (Transaction::PURCHASE == $transaction->type)
 			{
 				if (COIN_USUAL == $transaction->coins_type)
-					$balance->purchased_coins_count += $transaction->coins_count;
+					$balance->purchased_coins_count += (int) $transaction->coins_count;
 				else
-					$balance->purchased_big_coins_count += $transaction->coins_count;
+					$balance->purchased_big_coins_count += (int) $transaction->coins_count;
 			}
 			elseif (Transaction::RESTORE == $transaction->type)
 			{

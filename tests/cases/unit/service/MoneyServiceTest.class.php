@@ -189,31 +189,37 @@ class MoneyServiceTest extends odUnitTestCase
   function testRestore()
   {
     $service = new MoneyService();
-    $recipient = $this->generator->user();
+    $user = $this->generator->user();
 
     $deal = new InternalShopDeal();
     $deal->coins_type = COIN_USUAL;
     $deal->coins_count = 1;
 
-	  $balance = $service->balance($recipient);
+	  $balance = $service->balance($user);
 	  $this->assertEqual(0, $balance->free_coins_count);
 
-    $transaction = $service->tryRestore($recipient, $deal);
+    $transaction = $service->tryRestore($user, $deal);
 		//transaction
     $this->assertTrue($transaction->id);
     $this->assertEqual(null, $transaction->sender_id);
-    $this->assertEqual($recipient->id, $transaction->recipient_id);
+    $this->assertEqual($user->id, $transaction->recipient_id);
     $this->assertEqual(Transaction::RESTORE, $transaction->type);
     $this->assertEqual($deal->coins_type, $transaction->coins_type);
     $this->assertEqual($deal->coins_count, $transaction->coins_count);
     $this->assertEqual(null, $transaction->message);
     $this->assertTrue($transaction->ctime);
 	  //history
-	  $this->assertEqual(1, count($service->history($recipient)));
+	  $this->assertEqual(1, count($service->history($user)));
 	  //balance
-	  $balance = $service->balance($recipient);
+	  $balance = $service->balance($user);
 	  $this->assertEqual(1, $balance->free_coins_count);
 	  $this->assertEqual(true, (bool) $balance->free_coins_available_time);
+
+	  $recipient = $this->generator->user();
+		$service->transfer($user, $recipient, COIN_USUAL, 1, '');
+		$balance = $service->balance($user);
+	  $this->assertEqual(0, $balance->purchased_coins_count);
+	  $this->assertEqual(0, $balance->free_coins_count);
   }
 
 	function testRestore_repeat()
@@ -245,3 +251,5 @@ class MoneyServiceTest extends odUnitTestCase
 		return $deal;
 	}
 }
+
+//AAAF5PSZAC1RsBAOZBT2yj7l4Ssh4sApWR1YCtCmSJhHSZCRc0JwZAkHG2IplPPU7AxFVsMdF5nVo1OoQEw5Jgg9k44ZCOUac4tT4Rk4HCNIQ9eogGcJiR
