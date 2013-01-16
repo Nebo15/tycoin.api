@@ -148,7 +148,7 @@ class MoneyService
 			}
 			elseif (Transaction::RESTORE == $transaction->type)
 			{
-				$balance->free_coins_count = $transaction->coins_count;
+				$balance->free_coins_count = (int) $transaction->coins_count;
 				$balance->free_coins_available_time = time() + self::FREE_COINS_RESTORE_PERIOD;
 			}
 		}
