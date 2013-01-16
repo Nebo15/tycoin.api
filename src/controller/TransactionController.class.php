@@ -11,7 +11,7 @@ class TransactionController extends BaseJsonController
 
 		$this->_checkPropertiesInRequest(array('uid', 'type', 'message'));
 		if (!$this->error_list->isEmpty())
-			return $this->_answerWithError($this->error_list->export());
+			return $this->_answerWithError($this->error_list);
 
 		$uid = $this->request->get('uid');
 		if (!$recipient = User::findByFacebookUid($uid))
@@ -25,9 +25,6 @@ class TransactionController extends BaseJsonController
 		$coins_type = $this->request->get('type') == 'big' ? COIN_BIG : COIN_USUAL;
 		$message = $this->request->get('message');
 		$transaction = $this->toolkit->getMoneyService()->transfer($this->_getUser(), $recipient, $coins_type, 1, $message);
-
-		$this->toolkit->getDefaultDbConnection()->commitTransaction();
-		$this->toolkit->getFacebookProfile($this->_getUser())->shareTransaction($transaction, $recipient);
 
 		return $this->_answerOk($this->toolkit->getMoneyService()->balance($this->_getUser()));
 	}
@@ -63,5 +60,11 @@ class TransactionController extends BaseJsonController
 			$answer[] = $transaction;
 		}
 		return $this->_answerOk($answer);
+	}
+
+	function doGuestFallbackFromPosting()
+	{
+		$this->response->redirect('tycoin://index.html#give');
+		return $this->_answerOk();
 	}
 }
