@@ -251,5 +251,3 @@ class MoneyServiceTest extends odUnitTestCase
 		return $deal;
 	}
 }
-
-//AAAF5PSZAC1RsBAOZBT2yj7l4Ssh4sApWR1YCtCmSJhHSZCRc0JwZAkHG2IplPPU7AxFVsMdF5nVo1OoQEw5Jgg9k44ZCOUac4tT4Rk4HCNIQ9eogGcJiR
