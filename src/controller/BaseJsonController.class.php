@@ -110,9 +110,9 @@ abstract class BaseJsonController extends lmbController
   protected function _getFromToLimitations()
   {
     return array(
-      $this->request->getFiltered('from', FILTER_SANITIZE_NUMBER_INT),
-      $this->request->getFiltered('to', FILTER_SANITIZE_NUMBER_INT),
-      $this->request->getFiltered('limit', FILTER_SANITIZE_NUMBER_INT),
+      (int) $this->request->getFiltered('from', FILTER_SANITIZE_NUMBER_INT),
+      (int) $this->request->getFiltered('to', FILTER_SANITIZE_NUMBER_INT),
+      (int) $this->request->getFiltered('limit', FILTER_SANITIZE_NUMBER_INT),
     );
   }
 
