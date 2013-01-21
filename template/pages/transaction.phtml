@@ -2,6 +2,7 @@
 {{into slot="meta"}}
 <meta property="og:type" content="{$#facebook_app_namespace}:coin"/>
 <meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction"/>
+<meta property="recipient" content="http://facebook.com/{$#recipient_fb_uid}"/>
 {{/into}}
 {{into slot="content"}}
 <h1>Transaction #{$#transaction.id}</h1>

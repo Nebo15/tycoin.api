@@ -15,7 +15,7 @@ class PagesController extends lmbController
 		if (Transaction::TRANSFER != $this->transaction->type)
 			return $this->forwardTo404();
 
-
+		$this->recipient_fb_uid = $this->transaction->getRecipient()->facebook_uid;
 	}
 
 	function doNotFound()
