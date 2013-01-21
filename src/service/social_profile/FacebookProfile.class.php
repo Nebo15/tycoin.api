@@ -154,7 +154,7 @@ class FacebookProfile implements SocialServicesProfileInterface, SharesInterface
 		lmb_assert_true($recipient->facebook_uid);
 		return $this->provider->api("/me/" . $this->namespace . ":send", "post", array(
 			'coin' => $this->_getPageUrl($transaction),
-			'profile' => 'http://facebook.com/' . $recipient->facebook_uid
+			'profile' => 'http://graph.facebook.com/' . $recipient->facebook_uid
 		))['id'];
 
 //		return $this->provider->api("/{$recipient->facebook_uid}/feed", "post", array(
