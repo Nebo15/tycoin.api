@@ -45,7 +45,7 @@ class Transaction extends BaseModel
 
 	function getRecipient()
 	{
-		return User::findByIds($this->recipient_id);
+		return User::findById($this->recipient_id);
 	}
 
 	function getHash()
