@@ -1,17 +1,18 @@
 {{wrap with="layout.phtml"}}
 {{into slot="meta"}}
-<meta property="og:type" content="{$#facebook_app_namespace}:coin"/>
-<meta property="og:title" content="TYCoin"/>
-<meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction"/>
-<meta property="tycoins:recipient" content="http://graph.facebook.com/{$#recipient_fb_uid}"/>
-<meta property="og:image" content="http://thx.onedayofmine.com/images/big-coin.jpg"/>
+  <meta property="og:type" content="{$#facebook_app_namespace}:transaction"/>
+  <meta property="og:title" content="Thank's"/>
+  <meta property="og:url" content="{$#host_url}pages/{$#transaction.id}/transaction"/>
+  <meta property="tycoins:to" content="{$#recipient_fb_uid}"/>
+  <meta property="tycoins:coin" content="http://thx.onedayofmine.com/og/coin_{$#transaction.coins_type}.html"/>
+  <meta property="og:image" content="http://thx.onedayofmine.com/images/{$#transaction.coins_type}-coin.jpg"/>
 {{/into}}
 {{into slot="content"}}
-<h1>Transaction #{$#transaction.id}</h1>
-<ul>
+  <h1>Transaction #{$#transaction.id}</h1>
+  <ul>
     <li>id: {$#transaction.id}</li>
     <li>user_id: {$#transaction.user_id}</li>
     <li>description: {$#transaction.message}</li>
-</ul>
+  </ul>
 {{/into}}
 {{/wrap}}
